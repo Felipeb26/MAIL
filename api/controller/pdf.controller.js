@@ -80,7 +80,9 @@ function welcomeDoc(doc) {
 				300
 			)
 			.text(
-				"nos dedicamos para poder oferecer ajudar de acordo com a necessidade da melhor forma possivel",65,360
+				"Nós como grupo nos dedicamos para poder oferecer a melhor ajuda de acordo com a necessidade da melhor forma possivel.",
+				65,
+				360
 			)
 			.text(
 				"então agora que já finalizou seu cadastro que tal saber um pouco",
@@ -119,7 +121,77 @@ function welcomeDoc(doc) {
 	}
 }
 
+function deleteConsult(doc) {
+	try {
+		doc = new PDFdocument();
+
+		doc.image(img, {
+			fit: [150, 150],
+			align: "right",
+			valign: "center",
+		});
+
+		doc.fontSize(14)
+			.lineGap(5)
+			.text(
+				`Caro ${data} lamentamos em disser que sua consulta foi cancelada`,
+				65,
+				270
+			)
+			.text(`Sua consulta foi cancelada por causa de ......`, 65, 320)
+			.text("Caso queira remarcar a sua consulta clique", 65, 370)
+			.fillColor(link_color)
+			.text("aqui!!", 340, 370)
+			.underline(340, 365, 30, 17, { color: link_color })
+			.link(34, 365, 30, 17, "https://felipeb26.github.io/front_a3/about");
+
+		doc.fontSize(12)
+			.fillColor(text_color)
+			.text(`Documento gerado em São Paulo em ${date} ás ${time}`, 300, 650);
+
+		return doc;
+	} catch (error) {
+		console.log("errosr");
+		console.log(error);
+	} finally {
+		console.log("created file!");
+	}
+}
+
+function reagendarConsulta(doc) {
+	try {
+		doc = new PDFdocument();
+
+		doc.image(img, {
+			fit: [150, 150],
+			align: "right",
+			valign: "center",
+		});
+
+		doc.fontSize(14)
+			.lineGap(5)
+			.text(`Caro ${data} sua consulta foi reagendada para o dia`, 65, 270);
+
+		doc.text(`${date} ás ${time}.`, 65, 300).underline(65, 300, 155, 17);
+
+		doc.text("Caso queira alterar a data acesse", 65, 330);
+
+		doc.fillColor(link_color)
+			.text("aqui", 280, 330)
+			.underline(280, 330, 30, 17, { color: link_color })
+			.link(280, 330, 30, 17, "https://felipeb26.github.io/front_a3/calendario");
+
+		doc.fontSize(12)
+			.fillColor(text_color)
+			.text(`Documento gerado em São Paulo em ${date} ás ${time}`, 300, 650)
+
+		return doc;
+	} catch (error) {}
+}
+
 module.exports = {
 	welcomeUser,
 	welcomeDoc,
+	deleteConsult,
+	reagendarConsulta,
 };

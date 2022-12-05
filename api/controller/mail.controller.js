@@ -106,7 +106,7 @@ const teste = async (req, res) => {
 			printing: "lowResolution",
 		});
 
-		const docs = pdfService.welcomeDoc(doc);
+		const docs = pdfService.reagendarConsulta(doc);
 
 
 		docs.pipe(fs.createWriteStream(name))
