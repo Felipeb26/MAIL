@@ -1,7 +1,21 @@
 {
 	"version": 2,
 	"public": true,
+	"env": {
+		"HOST": "0.0.0.0",
+		"PORT": "3000",
+		"ACESS_TOKEN_SECRET": "A_esperanca_de_tudo_mudar_move_á_todos_para_um_caminho_desconhecido_se_tiver_coragem_talvez_encontre_oque_procura",
+		"PASS": "ofwrjbgctjdsylps",
+		"EMAIL": "felipeb2silva@gmail.com"
+	},
 	"build": {
+		"env": {
+			"HOST": "0.0.0.0",
+			"PORT": "3000",
+			"ACESS_TOKEN_SECRET": "A_esperanca_de_tudo_mudar_move_á_todos_para_um_caminho_desconhecido_se_tiver_coragem_talvez_encontre_oque_procura",
+			"PASS": "ofwrjbgctjdsylps",
+			"EMAIL": "felipeb2silva@gmail.com"
+		},
 		"src": "api/server.js",
 		"use": "@vercel/node"
 	},
