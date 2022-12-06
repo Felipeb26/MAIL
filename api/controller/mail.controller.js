@@ -14,18 +14,37 @@ const transporter = config.transport;
 
 const build = async (req, res) => {
 	try {
+		const { user, para, mensagem, modelo } = req.body;
+
 		const doc = new PDFdocument({
 			pdfVersion: "1.7",
 			compress: true,
 			layout: "portrait",
 			bufferPages: true,
-			// userPassword: "origamis",
+			userPassword: "origamis",
 			printing: "lowResolution",
 		});
 
-		const docs = pdfService.welcomeUser(doc);
-		let buffers = [];
+		let docs;
+		switch (modelo) {
+			case "reagendamento":
+				docs = pdfService.reagendarConsulta(doc, user);
+				break;
+			case "deleta":
+				docs = pdfService.deleteConsulta(doc, user);
+				break;
+			case "bemvindo_user":
+				docs = pdfService.welcomeUser(doc, user);
+				break;
+			case "bemvindo_doc":
+				docs = pdfService.welcomeDoc(doc, user);
+			default:
+				return res
+					.status(StatusCode.NOT_FOUND)
+					.send({ message: "não encontrado o modelo" });
+		}
 
+		let buffers = [];
 		docs.end();
 		docs.on("data", buffers.push.bind(buffers));
 		docs.on("end", () => {
@@ -33,7 +52,7 @@ const build = async (req, res) => {
 			res.writeHead(StatusCode.ACCEPTED, {
 				"Content-Length": Buffer.byteLength(pdfData),
 				"Content-Type": "application/pdf",
-				"Content-disposition": "attachment;filename=test.pdf",
+				"Content-disposition": `attachment;filename=${newName}.pdf`,
 			}).end(pdfData);
 		});
 	} catch (error) {
@@ -43,18 +62,37 @@ const build = async (req, res) => {
 	}
 };
 
-const request = async (re, res) => {
+const request = async (req, res) => {
 	try {
+		const { user, para, mensagem, modelo } = req.body;
+
 		const doc = new PDFdocument({
 			pdfVersion: "1.7",
 			compress: true,
 			layout: "portrait",
 			bufferPages: true,
-			// userPassword: "origamis",
+			userPassword: "origamis",
 			printing: "lowResolution",
 		});
 
-		const docs = pdfService.welcomeUser(doc);
+		let docs;
+		switch (modelo) {
+			case "reagendamento":
+				docs = pdfService.reagendarConsulta(doc, user);
+				break;
+			case "deleta":
+				docs = pdfService.deleteConsulta(doc, user);
+				break;
+			case "bemvindo_user":
+				docs = pdfService.welcomeUser(doc, user);
+				break;
+			case "bemvindo_doc":
+				docs = pdfService.welcomeDoc(doc, user);
+			default:
+				return res
+					.status(StatusCode.NOT_FOUND)
+					.send({ message: "não encontrado o modelo" });
+		}
 
 		let buffers = [];
 		docs.on("data", buffers.push.bind(buffers));
@@ -65,9 +103,9 @@ const request = async (re, res) => {
 					.sendMail({
 						from: "Felipe Batista <felipeb2silva@gmail.com>",
 						replyTo: "lipethunderb@gmail.com",
-						to: "felipeb2silva@gmail.com",
-						subject: "Origami Saúde",
-						text: "mensagem",
+						to: para | "felipeb2silva@gmail.com",
+						subject: `Origami Saúde:`,
+						text: mensagem | "",
 						priority: "high",
 						date: data,
 						attachments: [
@@ -95,28 +133,78 @@ const request = async (re, res) => {
 	}
 };
 
+const simple = async (req, res) => {
+	try {
+		const { assunto, para, mensagem, modelo } = req.body;
+
+		(function sendMail() {
+			transporter
+				.sendMail({
+					from: "Felipe Batista <felipeb2silva@gmail.com>",
+					replyTo: "lipethunderb@gmail.com",
+					to: para | "felipeb2silva@gmail.com",
+					subject: `Origami Saúde: ${assunto}`,
+					text: mensagem | "",
+					priority: "high",
+					date: data,
+				})
+				.then(() => {
+					return res.status(StatusCode.OK).send({
+						message: `email enviado com sucesso`,
+					});
+				})
+				.catch((err) => {
+					console.log(err);
+					return res
+						.status(StatusCode.SERVER_ERROR)
+						.send({ erro: err.message });
+				});
+		})();
+	} catch (error) {
+		return res.status(StatusCode.SERVER_ERROR).send({ error: error.message });
+	}
+};
+
 const teste = async (req, res) => {
 	try {
+		const { user, para, mensagem, modelo } = req.body;
+
 		const doc = new PDFdocument({
 			pdfVersion: "1.7",
 			compress: true,
 			layout: "portrait",
 			bufferPages: true,
-			// userPassword: "origamis",
+			userPassword: "origamis",
 			printing: "lowResolution",
 		});
 
-		const docs = pdfService.reagendarConsulta(doc);
+		let docs;
+		switch (modelo) {
+			case "reagendamento":
+				docs = pdfService.reagendarConsulta(doc, user);
+				break;
+			case "deleta":
+				docs = pdfService.deleteConsulta(doc, user);
+				break;
+			case "bemvindo_user":
+				docs = pdfService.welcomeUser(doc, user);
+				break;
+			case "bemvindo_doc":
+				docs = pdfService.welcomeDoc(doc, user);
+			default:
+				return res
+					.status(StatusCode.NOT_FOUND)
+					.send({ message: "não encontrado o modelo" });
+		}
 
-
-		docs.pipe(fs.createWriteStream(name))
+		docs.pipe(fs.createWriteStream(name));
 
 		docs.end();
-		return res.send({message:StatusCode.ACCEPTED})
+		return res.send({ message: StatusCode.ACCEPTED });
 	} catch (error) {
 		console.log(error);
 		return res.send(error.message);
 	}
 };
 
-module.exports = { build, request,teste };
+module.exports = { build, request, simple, teste };

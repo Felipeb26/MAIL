@@ -1,12 +1,13 @@
 const route = require("express").Router({ caseSensitive: false });
 const controller = require("../controller/mail.controller");
 
+route.post("/mail", controller.request)
 
-route.get("/mail", controller.request)
+route.post("/pdf", controller.build);
 
-route.get("/pdf", controller.build);
+route.post("/send", controller.simple);
 
-route.get("/teste", controller.teste);
+route.post("/teste", controller.teste);
 
 route.get("/", async (req, res) => {
 	return res.status(200).send({ message: "MAIl is running" });

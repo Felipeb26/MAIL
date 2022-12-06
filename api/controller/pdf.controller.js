@@ -1,5 +1,6 @@
 const PDFdocument = require("pdfkit");
 
+const ico = `${__dirname}/assets/favicon.ico`;
 const img = `${__dirname}/assets/logo.png`;
 const data = Date.now();
 const date = new Date(data).toLocaleDateString("pt-br");
@@ -7,7 +8,7 @@ const time = new Date(data).toLocaleTimeString("pt-br");
 const link_color = "#0000ff";
 const text_color = "#000000";
 
-function welcomeUser(doc) {
+function welcomeUser(doc, user) {
 	try {
 		doc = new PDFdocument();
 
@@ -19,7 +20,7 @@ function welcomeUser(doc) {
 
 		doc.fontSize(14)
 			.lineGap(5)
-			.text(`Olá ${data}, seja bem vindo ao Origami Sáude!`, 65, 270)
+			.text(`Olá ${user}, seja bem vindo ao Origami Sáude!`, 65, 270)
 			.text(
 				"Sua entrada para como usuario de nossos serviços é um grande avanço no cuidado e tratamento de sua saúde, nos dedicamos para poder ajudar de acordo sua necessidade oferecendo um tratamento e auxilio 24hrs com os medicos disponiveis em nosso sistema",
 				65,
@@ -61,7 +62,7 @@ function welcomeUser(doc) {
 	}
 }
 
-function welcomeDoc(doc) {
+function welcomeDoc(doc, user) {
 	try {
 		doc = new PDFdocument();
 
@@ -73,7 +74,7 @@ function welcomeDoc(doc) {
 
 		doc.fontSize(14)
 			.lineGap(5)
-			.text(`Olá ${data}, seja bem vindo ao Origami Sáude!`, 65, 270)
+			.text(`Olá ${user}, seja bem vindo ao Origami Sáude!`, 65, 270)
 			.text(
 				"Sua entrada para como usuario colaborador de nossos serviços é um grande avanço no cuidado e tratamento da saúde de nossos clientes",
 				65,
@@ -121,7 +122,7 @@ function welcomeDoc(doc) {
 	}
 }
 
-function deleteConsult(doc) {
+function deleteConsulta(doc, user) {
 	try {
 		doc = new PDFdocument();
 
@@ -134,7 +135,7 @@ function deleteConsult(doc) {
 		doc.fontSize(14)
 			.lineGap(5)
 			.text(
-				`Caro ${data} lamentamos em disser que sua consulta foi cancelada`,
+				`Caro ${user} lamentamos em disser que sua consulta foi cancelada`,
 				65,
 				270
 			)
@@ -158,7 +159,7 @@ function deleteConsult(doc) {
 	}
 }
 
-function reagendarConsulta(doc) {
+function reagendarConsulta(doc, user) {
 	try {
 		doc = new PDFdocument();
 
@@ -168,22 +169,38 @@ function reagendarConsulta(doc) {
 			valign: "center",
 		});
 
+		doc.image(ico, {
+			cover: [doc.page.width-100, doc.page.height-100],
+			align: "right",
+			valign: "center",
+		});
+
 		doc.fontSize(14)
 			.lineGap(5)
-			.text(`Caro ${data} sua consulta foi reagendada para o dia`, 65, 270);
+			.text(`Caro ${user} sua consulta foi reagendada para o dia`, 65, 270);
 
-		doc.text(`${date} ás ${time}.`, 65, 300).underline(65, 300, 155, 17);
+		doc.text(`${date} ás ${time}.`, 200, 350).underline(200, 350, 155, 17);
 
-		doc.text("Caso queira alterar a data acesse", 65, 330);
+		doc.text(
+			"Caso queira alterar a data acesse da consulta novamente ou cancelar",
+			65,
+			450
+		);
 
 		doc.fillColor(link_color)
-			.text("aqui", 280, 330)
-			.underline(280, 330, 30, 17, { color: link_color })
-			.link(280, 330, 30, 17, "https://felipeb26.github.io/front_a3/calendario");
+			.text("clique aqui!", 65, 470)
+			.underline(65, 470, 75, 17, { color: link_color })
+			.link(
+				65,
+				470,
+				75,
+				17,
+				"https://felipeb26.github.io/front_a3/calendario"
+			);
 
 		doc.fontSize(12)
 			.fillColor(text_color)
-			.text(`Documento gerado em São Paulo em ${date} ás ${time}`, 300, 650)
+			.text(`Documento gerado em São Paulo em ${date} ás ${time}`, 300, 650);
 
 		return doc;
 	} catch (error) {}
@@ -192,6 +209,6 @@ function reagendarConsulta(doc) {
 module.exports = {
 	welcomeUser,
 	welcomeDoc,
-	deleteConsult,
+	deleteConsulta,
 	reagendarConsulta,
 };

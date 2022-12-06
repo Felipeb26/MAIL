@@ -1,3 +1,4 @@
+*.pdf
 *lock
 # Logs
 logs
@@ -103,3 +104,4 @@ dist
 
 # TernJS port file
 .tern-port
+.vercel

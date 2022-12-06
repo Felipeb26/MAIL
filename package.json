@@ -5,7 +5,8 @@
 	"license": "MIT",
 	"scripts": {
 		"start": "node api/server.js",
-		"dev": "nodemon api/server.js"
+		"dev": "nodemon api/server.js",
+		"installA": "yarn install"
 	},
 	"dependencies": {
 		"compression": "^1.7.4",
