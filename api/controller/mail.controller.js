@@ -26,7 +26,7 @@ const build = async (req, res) => {
 		});
 
 		let docs;
-		const model = new String(modelo)
+		const model = new String(modelo);
 		switch (model.toLowerCase()) {
 			case "reagendamento":
 				docs = pdfService.reagendarConsulta(doc, user);
@@ -47,7 +47,7 @@ const build = async (req, res) => {
 		docs.on("data", buffers.push.bind(buffers));
 		docs.end();
 		docs.on("end", () => {
-			let pdfData = Buffer.concat(buffers);
+			const pdfData = Buffer.concat(buffers);
 			res.writeHead(StatusCode.ACCEPTED, {
 				"Content-Length": Buffer.byteLength(pdfData),
 				"Content-Type": "application/pdf",
@@ -74,8 +74,9 @@ const request = async (req, res) => {
 			printing: "lowResolution",
 		});
 
-		var docs;
-		switch (modelo) {
+		let docs;
+		const model = new String(modelo);
+		switch (model.toLowerCase()) {
 			case "reagendamento":
 				docs = pdfService.reagendarConsulta(doc, user);
 				break;
@@ -88,9 +89,16 @@ const request = async (req, res) => {
 			case "bemvindo_doc":
 				docs = pdfService.welcomeDoc(doc, user);
 			default:
-				return res
-					.status(StatusCode.NOT_FOUND)
-					.send({ message: "não encontrado o modelo" });
+				docs = pdfService.defaults(doc);
+		}
+
+		let to = para;
+		if (para == null || para == undefined) {
+			to = "felipeb2silva@gmail.com";
+		}
+		let message = mensagem;
+		if (mensagem == null || mensagem == undefined) {
+			message = "";
 		}
 
 		let buffers = [];
@@ -98,38 +106,37 @@ const request = async (req, res) => {
 		docs.end();
 		docs.on("end", () => {
 			const pdfData = Buffer.concat(buffers);
-			(function sendMail() {
-				transporter
-					.sendMail({
-						from: "Felipe Batista <felipeb2silva@gmail.com>",
-						replyTo: "lipethunderb@gmail.com",
-						to: para | "felipeb2silva@gmail.com",
-						subject: `Origami Saúde:`,
-						text: mensagem | "",
-						priority: "high",
-						date: data,
-						attachments: [
-							{
-								filename: `${newName}.pdf`,
-								content: pdfData,
-							},
-						],
-					})
-					.then(() => {
-						return res.status(StatusCode.OK).send({
-							message: `email enviado com sucesso`,
-						});
-					})
-					.catch((err) => {
-						console.log(err);
-						return res
-							.status(StatusCode.SERVER_ERROR)
-							.send({ erro: err.message });
+			transporter
+				.sendMail({
+					from: "Felipe Batista <felipeb2silva@gmail.com>",
+					replyTo: "lipethunderb@gmail.com",
+					to: to,
+					subject: `Origami Saúde:`,
+					text: message,
+					priority: "high",
+					date: data,
+					attachments: [
+						{
+							filename: `${newName}.pdf`,
+							content: pdfData,
+						},
+					],
+				})
+				.then(() => {
+					return res.status(StatusCode.OK).send({
+						message: `email enviado com sucesso`,
 					});
-			})();
-		})();
+				})
+				.catch((err) => {
+					console.log(err);
+					return res
+						.status(StatusCode.SERVER_ERROR)
+						.send({ erro: err.message });
+				});
+		});
 	} catch (error) {
 		console.log(error);
+		return res.status(StatusCode.SERVER_ERROR).send({ erro: error.message });
 	}
 };
 

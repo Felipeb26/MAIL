@@ -9,7 +9,14 @@ const link_color = "#0000ff";
 const text_color = "#000000";
 
 function defaults(doc) {
-	doc = new PDFdocument();
+	doc = new PDFdocument({
+		pdfVersion: "1.7",
+		compress: true,
+		layout: "portrait",
+		bufferPages: true,
+		userPassword: "origamis",
+		printing: "lowResolution",
+	});
 
 	doc.image(img, {
 		cover: [doc.page.width - 150, doc.page.height - 150],
@@ -21,7 +28,14 @@ function defaults(doc) {
 
 function welcomeUser(doc, user) {
 	try {
-		doc = new PDFdocument();
+		doc = new PDFdocument({
+			pdfVersion: "1.7",
+			compress: true,
+			layout: "portrait",
+			bufferPages: true,
+			userPassword: "origamis",
+			printing: "lowResolution",
+		});
 
 		doc.image(img, {
 			fit: [150, 150],
@@ -75,8 +89,14 @@ function welcomeUser(doc, user) {
 
 function welcomeDoc(doc, user) {
 	try {
-		doc = new PDFdocument();
-
+		doc = new PDFdocument({
+			pdfVersion: "1.7",
+			compress: true,
+			layout: "portrait",
+			bufferPages: true,
+			userPassword: "origamis",
+			printing: "lowResolution",
+		});
 		doc.image(img, {
 			fit: [150, 150],
 			align: "right",
@@ -135,8 +155,14 @@ function welcomeDoc(doc, user) {
 
 function deleteConsulta(doc, user) {
 	try {
-		doc = new PDFdocument();
-
+		doc = new PDFdocument({
+			pdfVersion: "1.7",
+			compress: true,
+			layout: "portrait",
+			bufferPages: true,
+			userPassword: "origamis",
+			printing: "lowResolution",
+		});
 		doc.image(img, {
 			fit: [150, 150],
 			align: "right",
@@ -172,14 +198,19 @@ function deleteConsulta(doc, user) {
 
 function reagendarConsulta(doc, user) {
 	try {
-		doc = new PDFdocument();
-
+		doc = new PDFdocument({
+			pdfVersion: "1.7",
+			compress: true,
+			layout: "portrait",
+			bufferPages: true,
+			userPassword: "origamis",
+			printing: "lowResolution",
+		});
 		doc.image(img, {
 			fit: [150, 150],
 			align: "right",
 			valign: "center",
 		});
-
 
 		doc.fontSize(14)
 			.lineGap(5)
@@ -210,7 +241,7 @@ function reagendarConsulta(doc, user) {
 
 		return doc;
 	} catch (error) {
-		console.log(error)
+		console.log(error);
 	}
 }
 
