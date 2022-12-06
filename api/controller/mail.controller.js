@@ -26,7 +26,8 @@ const build = async (req, res) => {
 		});
 
 		let docs;
-		switch (modelo) {
+		const model = new String(modelo)
+		switch (model.toLowerCase()) {
 			case "reagendamento":
 				docs = pdfService.reagendarConsulta(doc, user);
 				break;
@@ -39,14 +40,12 @@ const build = async (req, res) => {
 			case "bemvindo_doc":
 				docs = pdfService.welcomeDoc(doc, user);
 			default:
-				return res
-					.status(StatusCode.NOT_FOUND)
-					.send({ message: "não encontrado o modelo" });
+				docs = pdfService.defaults(doc);
 		}
 
 		let buffers = [];
-		docs.end();
 		docs.on("data", buffers.push.bind(buffers));
+		docs.end();
 		docs.on("end", () => {
 			let pdfData = Buffer.concat(buffers);
 			res.writeHead(StatusCode.ACCEPTED, {
@@ -75,7 +74,7 @@ const request = async (req, res) => {
 			printing: "lowResolution",
 		});
 
-		let docs;
+		var docs;
 		switch (modelo) {
 			case "reagendamento":
 				docs = pdfService.reagendarConsulta(doc, user);
@@ -96,6 +95,7 @@ const request = async (req, res) => {
 
 		let buffers = [];
 		docs.on("data", buffers.push.bind(buffers));
+		docs.end();
 		docs.on("end", () => {
 			const pdfData = Buffer.concat(buffers);
 			(function sendMail() {
@@ -178,7 +178,7 @@ const teste = async (req, res) => {
 			printing: "lowResolution",
 		});
 
-		let docs;
+		var docs;
 		switch (modelo) {
 			case "reagendamento":
 				docs = pdfService.reagendarConsulta(doc, user);

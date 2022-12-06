@@ -8,6 +8,17 @@ const time = new Date(data).toLocaleTimeString("pt-br");
 const link_color = "#0000ff";
 const text_color = "#000000";
 
+function defaults(doc) {
+	doc = new PDFdocument();
+
+	doc.image(img, {
+		cover: [doc.page.width - 150, doc.page.height - 150],
+		align: "right",
+		valign: "center",
+	});
+	return doc;
+}
+
 function welcomeUser(doc, user) {
 	try {
 		doc = new PDFdocument();
@@ -169,11 +180,6 @@ function reagendarConsulta(doc, user) {
 			valign: "center",
 		});
 
-		doc.image(ico, {
-			cover: [doc.page.width-100, doc.page.height-100],
-			align: "right",
-			valign: "center",
-		});
 
 		doc.fontSize(14)
 			.lineGap(5)
@@ -203,10 +209,13 @@ function reagendarConsulta(doc, user) {
 			.text(`Documento gerado em São Paulo em ${date} ás ${time}`, 300, 650);
 
 		return doc;
-	} catch (error) {}
+	} catch (error) {
+		console.log(error)
+	}
 }
 
 module.exports = {
+	defaults,
 	welcomeUser,
 	welcomeDoc,
 	deleteConsulta,
