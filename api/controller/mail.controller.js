@@ -98,7 +98,9 @@ const request = async (req, res) => {
 		}
 		let message = mensagem;
 		if (mensagem == null || mensagem == undefined) {
-			message = "";
+			message = "A senha para acesso é origamis";
+		}else{
+			message = `A senha para acesso é origamis.\n\t${message} `;
 		}
 
 		let buffers = [];
