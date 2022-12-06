@@ -146,14 +146,32 @@ const simple = async (req, res) => {
 	try {
 		const { assunto, para, mensagem, modelo } = req.body;
 
+
+		let to = para;
+		if (para == null || undefined) {
+			to = "felipeb2silva@gmail.com";
+		}
+		let message = mensagem;
+		if (mensagem == null || undefined) {
+			message = "A senha para acesso é origamis";
+		} else {
+			message = `A senha para acesso é origamis.\n\t${message} `;
+		}
+		let ass =assunto;
+		if(assunto == null || undefined){
+			ass = `Origami Saúde`
+		}else{
+			ass = `Origami Saúde:\t ${assunto}`
+		}
+
 		(function sendMail() {
 			transporter
 				.sendMail({
 					from: "Felipe Batista <felipeb2silva@gmail.com>",
-					replyTo: "lipethunderb@gmail.com",
-					to: para | "felipeb2silva@gmail.com",
-					subject: `Origami Saúde: ${assunto}`,
-					text: mensagem | "",
+					replyTo: "lipethunderb@gmail.com;felipeb2silva@gmail.com",
+					to: to,
+					subject: ass,
+					text: message,
 					priority: "high",
 					date: data,
 				})
